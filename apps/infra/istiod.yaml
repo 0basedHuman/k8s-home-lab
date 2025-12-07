@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istiod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/0basedHuman/k8s-home-lab.git
+    targetRevision: main
+    path: istio/istio/istiod
+    helm:
+      releaseName: istiod
+      parameters:
+        - name: global.hub
+          value: docker.io/istio
+        - name: global.tag
+          value: 1.22.2      # match the chart version you pulled
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
